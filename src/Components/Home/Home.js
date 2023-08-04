@@ -1,0 +1,136 @@
+import * as React from "react";
+import { useState } from "react";
+import axios from "axios";
+import Carousel from "react-bootstrap/Carousel";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { sliderItems } from "./CorouselApi";
+import Navbar from "./Navbar";
+import Home_content from "./Home_content";
+import Searchbar from "./Searchbar";
+import Cards from "../HomeCard/Cards.js";
+import Footer from "../Footer/Footer";
+import { useEffect } from "react";
+import SkeletonCard from "./SkeletonCard";
+
+function Home() {
+  const [cityName, setCityName] = useState("jaipur");
+  const [hotelData, setHotelData] = useState([]);
+  const [locationId, setlocationId] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    searchApi();
+  }, [cityName]); //useEffect og getting geoId
+  useEffect(() => {
+    if (locationId) {
+      getHotelData();
+    }
+  }, [locationId]); //of getting hotel data
+
+  const debounce = (callback, delay) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        callback(...args);
+      }, delay);
+    };
+  };
+
+  const getCityName = (e) => {
+    setCityName(e.target.value.toLowerCase());
+  };
+  const debouncedHandleInputChange = debounce(getCityName, 300);
+
+  async function searchApi() {
+    // const state = null;
+    const locationName = `${cityName},India`;
+    const options = {
+      method: "GET",
+      url: "https://tripadvisor16.p.rapidapi.com/api/v1/hotels/searchLocation",
+      params: {
+        query: { locationName },
+      },
+      headers: {
+        "X-RapidAPI-Key": "a8f3579052msh13ad133828d9c60p18105cjsn1af6a64f72a4",
+        "X-RapidAPI-Host": "tripadvisor16.p.rapidapi.com",
+      },
+    };
+    try {
+      const response = await axios.request(options);
+      const geoId = response.data.data[0].geoId;
+      setlocationId(geoId);
+
+    } catch (error) {
+      console.error(error);
+    }
+    console.log(locationId);
+  }
+  //of getting hotelData
+  async function getHotelData() {
+    const options = {
+      method: "GET",
+      url: "https://tripadvisor16.p.rapidapi.com/api/v1/hotels/searchHotels",
+      params: {
+        geoId: locationId,
+        checkIn: "2023-07-15",
+        checkOut: "2023-07-15",
+        pageNumber: "1",
+        currencyCode: "INR",
+      },
+      headers: {
+        "X-RapidAPI-Key": "a8f3579052msh13ad133828d9c60p18105cjsn1af6a64f72a4",
+        "X-RapidAPI-Host": "tripadvisor16.p.rapidapi.com",
+      },
+    };
+    console.log(`geoId of Entered City ${locationId}`);
+    console.log(`entered cityname ${cityName}`);
+
+    try {
+      const response = await axios.request(options);
+      const allData = response.data.data.data;
+      setHotelData(allData);
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const images = sliderItems.map((url) => (
+    <Carousel.Item interval={3000} wrap>
+      <img
+        style={{ height: "100vh" }}
+        className=" d-block w-full"
+        src={url}
+        alt="First slide"
+      />
+    </Carousel.Item>
+  ));
+
+  return (
+    <>
+      <Navbar />
+      <div className="h-3/6">
+        <Carousel controls={false} indicators={false}>
+          {images}
+        </Carousel>
+      </div>
+      <Home_content />
+      <Searchbar
+        searchCity={debouncedHandleInputChange}
+      />
+      <div className="card-flex">
+        {isLoading ? (
+          Array.from({ length: 20 }).map((_, index) => (
+            <SkeletonCard key={`skeleton-card-${index}`} />
+          ))
+        ) : (
+          hotelData.map((el, id) => (
+            <Cards key={`card-${id}`} id={id} card={el} />
+          ))
+        )}
+      </div>
+      <Footer />
+    </>
+  );
+}
+export default Home;
