@@ -19,7 +19,7 @@ function Home() {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     searchApi();
-  }, [cityName]); //useEffect og getting geoId
+  }, [cityName]); //getting geoId
   useEffect(() => {
     if (locationId) {
       getHotelData();
@@ -51,7 +51,7 @@ function Home() {
         query: { locationName },
       },
       headers: {
-        "X-RapidAPI-Key": "a8f3579052msh13ad133828d9c60p18105cjsn1af6a64f72a4",
+        "X-RapidAPI-Key": "12889b00bemsh5a97c2211c7aad4p1942bcjsn7330e166400d",
         "X-RapidAPI-Host": "tripadvisor16.p.rapidapi.com",
       },
     };
@@ -78,7 +78,7 @@ function Home() {
         currencyCode: "INR",
       },
       headers: {
-        "X-RapidAPI-Key": "a8f3579052msh13ad133828d9c60p18105cjsn1af6a64f72a4",
+        "X-RapidAPI-Key": "12889b00bemsh5a97c2211c7aad4p1942bcjsn7330e166400d",
         "X-RapidAPI-Host": "tripadvisor16.p.rapidapi.com",
       },
     };
@@ -94,6 +94,8 @@ function Home() {
       console.error(error);
     }
   }
+
+
 
   const images = sliderItems.map((url) => (
     <Carousel.Item interval={3000} wrap>
