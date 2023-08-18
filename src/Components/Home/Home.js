@@ -51,7 +51,7 @@ function Home() {
         query: { locationName },
       },
       headers: {
-        "X-RapidAPI-Key": "12889b00bemsh5a97c2211c7aad4p1942bcjsn7330e166400d",
+        "X-RapidAPI-Key": 'f98d50e4e4mshef850d3edaf81d2p14f277jsn11b6e0722f09',
         "X-RapidAPI-Host": "tripadvisor16.p.rapidapi.com",
       },
     };
@@ -78,7 +78,7 @@ function Home() {
         currencyCode: "INR",
       },
       headers: {
-        "X-RapidAPI-Key": "12889b00bemsh5a97c2211c7aad4p1942bcjsn7330e166400d",
+        "X-RapidAPI-Key": 'f98d50e4e4mshef850d3edaf81d2p14f277jsn11b6e0722f09',
         "X-RapidAPI-Host": "tripadvisor16.p.rapidapi.com",
       },
     };
@@ -94,8 +94,6 @@ function Home() {
       console.error(error);
     }
   }
-
-
 
   const images = sliderItems.map((url) => (
     <Carousel.Item interval={3000} wrap>
